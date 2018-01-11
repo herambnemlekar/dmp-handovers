@@ -1,0 +1,8 @@
+prefix=/home/heramb/HoldMyCup/devel
+
+Name: DMP_baxter_simulation
+Description: Description of DMP_baxter_simulation
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/heramb/HoldMyCup/devel/lib 
+Requires: 

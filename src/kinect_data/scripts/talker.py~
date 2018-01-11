@@ -1,0 +1,52 @@
+#!/usr/bin/env python
+
+import rospy
+import numpy as np
+from std_msgs.msg import String
+from kinect_data.msg import skeleton, joint
+
+
+def talker():
+	pub = rospy.Publisher('/skeleton_data', skeleton, queue_size=10)
+	rospy.init_node('talker', anonymous=True)
+	rate = rospy.Rate(30)
+	while not rospy.is_shutdown():
+		hello_str = "hello world %s" % rospy.get_time()
+		r = skeleton()
+		r.joints[0].joint_name = "Right_shoulder"
+		r.joints[0].x = 1
+		r.joints[0].y = 2
+		r.joints[0].z = 3
+		r.joints[0].stamp = rospy.get_time()
+
+		
+		r.joints[1].joint_name = "Left_hand"
+		r.joints[1].x = 3
+		r.joints[1].y = 4
+		r.joints[1].z = 5
+		r.joints[1].stamp = rospy.get_time()
+
+				
+		r.joints[2].joint_name = "Left_shoulder"
+		r.joints[2].x = 6
+		r.joints[2].y = 7
+		r.joints[2].z = 8
+		r.joints[2].stamp = rospy.get_time()
+		
+		
+		r.joints[3].joint_name = "Right_hand"
+		r.joints[3].x = 9
+		r.joints[3].y = 11
+		r.joints[3].z = 10
+		r.joints[3].stamp = rospy.get_time()
+
+		rospy.loginfo(r)
+		pub.publish(r)
+		rate.sleep()
+
+if __name__ == '__main__':
+		
+	try:
+		talker()
+	except rospy.ROSInterruptException:
+		pass

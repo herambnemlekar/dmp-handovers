@@ -1,0 +1,8 @@
+prefix=/home/heramb/HoldMyCup/install
+
+Name: kinect_data
+Description: Description of kinect_data
+Version: 0.0.0
+Cflags: -I/home/heramb/HoldMyCup/install/include
+Libs: -L/home/heramb/HoldMyCup/install/lib 
+Requires: message_runtime

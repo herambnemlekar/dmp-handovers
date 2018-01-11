@@ -1,0 +1,8 @@
+prefix=/home/heramb/HoldMyCup/devel
+
+Name: websock_osc
+Description: Description of websock_osc
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/heramb/HoldMyCup/devel/lib 
+Requires: 

@@ -1,0 +1,8 @@
+prefix=/home/heramb/HoldMyCup/devel
+
+Name: OTP
+Description: Description of OTP
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/heramb/HoldMyCup/devel/lib 
+Requires: 

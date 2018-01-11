@@ -1,0 +1,8 @@
+prefix=/home/heramb/HoldMyCup/install
+
+Name: dmp_baxter
+Description: Description of dmp_baxter
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/heramb/HoldMyCup/install/lib 
+Requires: 

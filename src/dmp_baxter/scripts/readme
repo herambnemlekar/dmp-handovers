@@ -1,0 +1,5 @@
+Baxter simulation with DMPs
+
+Run the baxter_dmp file after starting up the simulation and enabling the baxter.
+
+Alternatively, run baxter_dmp_publisher which publishes the DMP trajectory and Movement.py to run the baxter with the subscribed trajectory. 

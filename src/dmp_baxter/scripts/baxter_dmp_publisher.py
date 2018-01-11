@@ -1,0 +1,112 @@
+import rospy
+#import baxter_interface
+import numpy as np
+import matplotlib.pyplot as plt
+from train_dmp import train_dmp
+from DMP_runner import DMP_runner
+#from simple_trajectories import y_cubed_trajectory
+#from simple_trajectories import y_lin_trajectory
+import simple_trajectories
+from std_msgs.msg import String
+from otp.msg import pos
+
+def baxter_dmp_publisher():
+	#Name of the file
+	filename = []
+	for i in range(0,7):
+	    A='{}{}{}'.format('joint',i,'.xml')
+	    filename.append(A)
+
+	#Set no. of basis functions
+	n_rfs = 200
+
+	#Set the time-step
+	dt = 0.001
+
+	##### TRAJECTORY  FOR TRAINING ########
+	""" Available trajectories: ('ok')
+
+	    Linear = simple_trajectories.y_lin_trajectory(dt)
+	    Exponential = simple_trajectories.y_exp_trajectory(dt)
+	    Step = simple_trajectories.y_step_trajectory(dt)
+	    Baxter_s0 = simple_trajectories.bax_trajectory(dt,x) [x = 9 to x = 15 for the 7 baxter joints]
+	"""
+	X = []
+	for i in range(1,8):
+	    T = simple_trajectories.bax_trajectory(dt,i+8)
+	    X.append(T)
+	#Obtain w, c & D (in that order) from below function, and generate XML file
+
+	for i in range(0,7):
+	    Important_values = train_dmp(filename[i], n_rfs, X[i], dt)
+
+	#start = 0
+	#goal = 1
+	Y = []
+
+	####BELOW IS GIVEN A NEW POSITION, YOU CAN TEST THE "GOAL" AS THIS POSITION FOR THE JOINTS TO TRY IT OUT.########
+
+	my_runner = [[]]*7
+
+	Command_Publisher = rospy.Publisher('commands', String,queue_size=10)
+	rospy.init_node('commands', anonymous=True)
+	
+	Data_Sub = rospy.Subscriber('/otp_dynamic', pos, callback, queue_size=10)
+
+	count = 0
+		
+	position = []
+	
+def callback(data):
+	
+	goal_data = data.data
+	
+	point = goal_data[0,0:3]
+	time = goal_data[0,3]
+
+	joint_angles = IK_function(point)
+	position = np.append(position, joint_angles, axis=0)
+	
+	if count==0:
+		for x in range(0,7):
+		    start = X[x][0]
+		    #goal = X[x][-1]
+		    goal = position[count][x]
+		    my_runner[x] = DMP_runner(filename[x],start,goal)
+
+		#Default.Initial_position()
+		tau = 1     #tau NOT YET CHANGED
+
+	for i in np.arange(0,int(tau/dt)+1):
+	    '''Dynamic change in goal'''
+	    if i > 0.1*int(tau/dt):
+		for i in range(7):        
+		    my_runner[i].setGoal(position[count][i],1)
+	    '''Dynamic change in goal'''  
+	    for i in range(len(my_runner)):
+	    	my_runner[i].step(tau,dt)
+	       	Y.append(my_runner[i].y)
+	    Y_str=','.join(str(e) for e in Y)
+	    Command_Publisher.publish(Y_str)
+	    Y = []
+	print('done')
+
+	count = count + 1
+
+	rospy.spin()
+
+if __name__ == '__main__':
+	baxter_dmp_publisher()
+
+	"""Plot Function
+	time = np.arange(0,tau+dt,dt)
+	plt.title("2-D DMP demonstration")
+	plt.xlabel("Time(t)")
+	plt.ylabel("Position(y)")
+	for i in range(0,7):
+		#plt.plot(X[i])
+		#plt.plot(Y[i])
+		#plt._show()
+	"""
+
+

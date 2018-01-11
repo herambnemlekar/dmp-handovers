@@ -1,0 +1,2 @@
+dmp_baxter:kinect_data:otp
+-DCATKIN_DEVEL_PREFIX=/home/heramb/HoldMyCup/devel -DCMAKE_INSTALL_PREFIX=/home/heramb/HoldMyCup/install -G Unix Makefiles
